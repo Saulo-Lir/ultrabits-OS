@@ -1,20 +1,22 @@
+<?php
+  session_start();
+?>
+
 <html>
     <head>
-        <meta charset="UTF-8"/>
-        <link rel="stylesheet" type="text/css" href="css/layout.css"/>
-        <script type='text/javascript' href='js/script.js'></script>
+        <meta charset='UTF-8'/>
+        <link rel='stylesheet' type='text/css' href='assets/css/bootstrap.min.css' />
+        <link rel='stylesheet' type='text/css' href='assets/css/layout.css'/>
         <title>Ultrabits OS</title>
     </head>
-    
+
     <body>
-        <div class="topo">
-            <div class="logo">
-                <a href="index.php">
-                    <img src="imagens/logo.png"/>
-                </a>
-            </div>
-            <div class="titulo">
-               <strong>Gerenciador de OS</strong>
+        <div class='navbar navbar-inverse'>
+            <div class='container'>
+                <div class='navbar-header'>
+                    <a href='ultrabits.php'>
+                        <img src='assets/imagens/logo.png' width='180'/>
+                    </a>
+                </div>
             </div>
         </div>
-        

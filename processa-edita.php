@@ -1,5 +1,5 @@
 <?php
-require 'servico.class.php';
+require 'classes/servico.class.php';
 
 if(isset($_POST['empresa']) && !empty($_POST['empresa'])){
     $empresa = addslashes($_POST['empresa']);

@@ -1,5 +1,5 @@
 <?php
-    require 'servico.class.php';
+    require 'classes/servico.class.php';
 
     if(isset($_GET['id']) && !empty($_GET['id'])){
         $id = addslashes($_GET['id']);

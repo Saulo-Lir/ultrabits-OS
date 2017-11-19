@@ -1,0 +1,43 @@
+
+
+.corteste2{
+    background-color: #CFCFCF;
+}
+
+.botao{
+    width: 75%;
+    height: 75px;
+    margin: auto;
+    margin-bottom: 30px;
+    line-height: 75px;
+    text-align: center;
+    background-color: #FFC125;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.botao:hover{
+    background-color:#F0E68C;
+}
+
+.botao a {
+   text-decoration: none;
+   color: #1C1C1C;
+}
+
+.estilo-anexos {
+  width: 150px;
+  height: 200px;
+  float: left;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.estilo-anexos img {
+  width: 150px;
+}
+
+h3{
+  text-align: center;
+}
