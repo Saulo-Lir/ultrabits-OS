@@ -44,9 +44,36 @@
               for($i=0;$i<count($anexos['tmp_name']);$i++){
                   $tipo = $anexos['type'][$i];
 
-                  if(in_array($tipo, array('image/jpeg','image/npg'))){
+                  if(in_array($tipo, array('image/jpeg','image/png'))){
                       $nomeAnexo = md5(time().rand(0, 9999)).'.jpg';
                       move_uploaded_file($anexos['tmp_name'][$i],'assets/anexos/'.$nomeAnexo);
+
+                      /* Redimensionar as fotos e salvar no repositório local */
+
+                      list($width_orig, $height_orig) = getimagesize('assets/anexos/'.$nomeAnexo);
+                      $ratio = $width_orig / $height_orig;
+
+                      $width = 500;
+                      $height = 500;
+
+                      if($width / $height > $ratio){
+                        $width = $height * $ratio;
+                      }else {
+                        $height = $width / $ratio;
+                      }
+
+                      $img = imagecreatetruecolor($width, $height);
+
+                      if($tipo == 'image/jpeg'){
+                        $origi = imagecreatefromjpeg('assets/anexos/'.$nomeAnexo);
+                      }elseif($tipo == 'image/png'){
+                        $origi = imagecreatefrompng('assets/anexos/'.$nomeAnexo);
+                      }
+
+                      imagecopyresampled($img, $origi, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
+                      imagejpeg($img, 'assets/anexos/'.$nomeAnexo, 80);
+
+                      /* Redimensionar as fotos e salvar no repositório local */
 
                       $sql = "INSERT INTO anexos SET id_servico = :id_servico, nome = :nome";
                       $sql = $this->db->prepare($sql);
@@ -89,7 +116,7 @@
                 $array['anexos'] = $sql->fetchAll();
               }
           }
-          
+
           return $array;
       }
 

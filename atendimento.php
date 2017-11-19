@@ -109,15 +109,29 @@ $s = new Servico();
           foreach($servico['anexos'] as $anexo){
         ?>
         <div class='estilo-anexos'>
-          <img src='assets/anexos/<?=$anexo['nome']?>' class='img-thumbnail'/>
+
+          <a href='javascript:;' class='galeria'> <!-- javascript:; Não executa nada ao clicar no link -->
+            <img src='assets/anexos/<?=$anexo['nome']?>' class='img-thumbnail'/>
+          </a>
+
         </div>
 
         <?php
           }
         ?>
+
       </div>
     </div>
 
+
+
+</div>
+
+<!-- Efeito fadeIn / fadeOut -->
+<div class='bgbox'></div> <!-- Background transparente -->
+
+<div class='fotobox'>
+  <img src='' width='100%' />
 </div>
 
 <?php
