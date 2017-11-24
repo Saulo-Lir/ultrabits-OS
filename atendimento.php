@@ -4,34 +4,58 @@ require 'classes/servico.class.php';
 
 $s = new Servico();
 
+// Verificação de segurança
+
   if(isset($_GET['id']) && !empty($_GET['id'])){
     $id = addslashes($_GET['id']);
   } else{
 ?>
-    <script type='text/javascript'>window.location.href='acompanhar.php';</script>
+    <script type='text/javascript'>window.location.href='lista-os.php';</script>
 <?php
   }
 
-  $servico = $s->getOS($id);
+// Processamento da atendimento
 
-  $tipo = array(
-    '1' => 'Remoto',
-    '2' => 'Presencial'
-  );
+  if(isset($_POST['email']) && !empty($_POST['email'])){
+    $nome = addslashes($_POST['nome']);
+    $empresa = addslashes($_POST['empresa']);
+    $email = addslashes($_POST['email']);
+    $telefone = addslashes($_POST['tel']);
+    $descricao = addslashes($_POST['descricao']);
+    $status = 2;
 
-  $categoria = array(
-    '1' => 'Manutenção de Computadores',
-    '2' => 'Configuração',
-    '3' => 'Instalação de Software',
-    '4' => 'Roteadores / Modens / Switches',
-    '5' => 'Formatação',
-    '6' => 'Remoção de Vírus',
-    '7' => 'Upgrade'
-  );
+    if(isset($_FILES['anexos'])){
+      $anexos = $_FILES['anexos'];
+    }else {
+      $anexos = array();
+    }
 
-  $t = $servico['tipo'];
-  $c = $servico['categoria'];
+    $s->atualizaStatus($status,$id);
 
+    // Enviar mensagem por Email
+
+    //Parâmetros de envio
+    $para = 'saulo.l.nascimento@hotmail.com';
+    $assunto = 'Ordem de Serviço No.: '.$id;
+    $corpo = 'Técnico Responsável: '.$nome.'<br/>'.
+             'Empresa: '.$empresa.'<br/>'.
+             'Email: '.$email.'<br/>'.
+             'Telefone: '.$telefone.'<br/><br/>'.
+             '####  Descrição do Atendimento #### '.'<br/><br/>'.
+             $descricao;
+
+    $cabecalho = 'From: ultrabits@gmail.com'.'\r\n'.
+                 'Reply-To: '.$email.'\r\n'.
+                 'X-Mailer: PHP/'.phpversion();
+                 
+    // Enviando o email
+    mail($para, $assunto, $corpo, $cabecalho);
+
+?>
+    <div class='alert alert-success'>Atendimento efetuado com sucesso!</div>
+
+<?php
+  }
 ?>
 
 <div class='container-fluid'>
@@ -78,12 +102,36 @@ $s = new Servico();
             </div>
 
           </form>
+
         </div>
 
       </div>
   </div>
 
   <div class='col-sm-7'>
+
+  <?php
+
+    $servico = $s->getOS($id);
+
+    $tipo = array(
+      '1' => 'Remoto',
+      '2' => 'Presencial'
+    );
+
+    $categoria = array(
+      '1' => 'Manutenção de Computadores',
+      '2' => 'Configuração',
+      '3' => 'Instalação de Software',
+      '4' => 'Roteadores / Modens / Switches',
+      '5' => 'Formatação',
+      '6' => 'Remoção de Vírus',
+      '7' => 'Upgrade'
+    );
+
+    $t = $servico['tipo'];
+    $c = $servico['categoria'];
+  ?>
 
     <div class='jumbotron'>
       <h3>Ordem de Serviço <strong>N°.:<?=' '.$id?></strong></h3>
@@ -120,19 +168,17 @@ $s = new Servico();
           }
         ?>
 
+        <!-- Efeito fadeIn / fadeOut -->
+        <div class='bgbox'></div> <!-- Background transparente -->
+
+        <div class='fotobox'>
+          <img src='' width='100%' />
+        </div>
+
+      </div>
+
       </div>
     </div>
-
-
-
-</div>
-
-<!-- Efeito fadeIn / fadeOut -->
-<div class='bgbox'></div> <!-- Background transparente -->
-
-<div class='fotobox'>
-  <img src='' width='100%' />
-</div>
 
 <?php
     require 'rodape.php';

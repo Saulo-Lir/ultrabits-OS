@@ -85,6 +85,16 @@
           }
       }
 
+      public function atualizaStatus($status, $id){
+
+        $sql = "UPDATE servicos SET status = :status WHERE id = :id";
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(':status', $status);
+        $sql->bindValue(':id', $id);
+        $sql->execute();
+
+      }
+
       public function getListaOS(){
           $array = array();
 
