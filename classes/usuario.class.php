@@ -1,23 +1,13 @@
 <?php
+require './conexao.php';
 
 class Usuario{
-  private $db;
 
-  public function __construct(){
+    public function login($email, $senha){
+      global $pdo;
 
-    try{
-        $this->db = new PDO('mysql:dbname=ultrabits;host=localhost;charset=utf8','root','');
-        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    }catch(PDOException $ex){
-        echo 'Erro de conexão: '.$ex->getMessage();
-    }
-  }
-
-    public function login($usuario, $senha){
-
-      $sql = $this->db->prepare("SELECT id FROM usuarios WHERE email = :email AND senha = :senha");
-      $sql->bindValue(':email', $usuario);
+      $sql = $pdo->prepare("SELECT id FROM usuarios WHERE email = :email AND senha = :senha");
+      $sql->bindValue(':email', $email);
       $sql->bindValue(':senha', $senha);
       $sql->execute();
 
@@ -31,5 +21,61 @@ class Usuario{
       }
 
     }
+
+    public function cadastraUsuario($nome, $email, $empresa, $senha){
+      global $pdo;
+
+      $sql = "SELECT id FROM usuarios WHERE email = :email";
+      $sql = $pdo->prepare($sql);
+      $sql->bindValue(':email', $email);
+      $sql->execute();
+
+      if($sql->rowCount() == 0){
+        $sql = "INSERT INTO usuarios SET nome = :nome, email = :email,
+                empresa = :empresa, senha = :senha";
+        $sql = $pdo->prepare($sql);
+        $sql->bindValue(':nome', $nome);
+        $sql->bindValue(':email', $email);
+        $sql->bindValue(':empresa', $empresa);
+        $sql->bindValue(':senha', md5($senha));
+        $sql->execute();
+
+        return true;
+
+      }else {
+        return false;
+      }
+
+    }
+
+    public function getUsuario($id){
+      global $pdo;
+      $array = array();
+
+      $sql = "SELECT * FROM usuarios WHERE id = :id";
+      $sql = $pdo->prepare($sql);
+      $sql->bindValue(':id', $id);
+      $sql->execute();
+
+      if($sql->rowCount() > 0){
+        $array = $sql->fetch();
+      }
+
+      return $array;
+    }
+
+    public function atualizaPerfil($nome, $email, $empresa, $senha, $id){
+      global $pdo;
+
+      $sql = "UPDATE usuarios SET nome = :nome, email = :email,
+              empresa = :empresa, senha = :senha WHERE id = :id";
+      $sql = $pdo->prepare($sql);
+      $sql->bindValue(':nome', $nome);
+      $sql->bindValue(':email', $email);
+      $sql->bindValue(':empresa', $empresa);
+      $sql->bindValue(':senha', md5($senha));
+      $sql->execute();
+    }
+
   }
 ?>

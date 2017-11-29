@@ -1,6 +1,6 @@
 
 .botao{
-    width: 75%;
+    width: 85%;
     height: 75px;
     margin: auto;
     margin-bottom: 30px;
@@ -30,6 +30,15 @@
 }
 
 .estilo-anexos img {
+  width: 150px;
+}
+
+.foto-perfil{
+  width: 150px;
+  text-align: center;
+}
+
+.foto-perfil img{
   width: 150px;
 }
 

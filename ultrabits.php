@@ -1,28 +1,17 @@
 <?php
     require 'cabecalho.php';
+
+    if(empty($_SESSION['login'])){
+?>
+      <script type='text/javascript'>window.location.href='index.php';</script>
+<?php
+    exit;
+    }
 ?>
     <div class='container-fluid'>
         <div class='row'>
-            <div class='col-sm-3'>
-              <div class='panel panel-default'>
-                <div class='panel-heading'><h3>Menu</h3></div>
-                <div class='panel-body'>
 
-                  <div class='botao' onclick="window.location.href='solicitar.php';">
-                      Abrir OS
-                  </div>
-
-                  <div class='botao' onclick="window.location.href='lista-os.php';">
-                      Listar
-                  </div>
-
-                  <div class='botao' onclick="window.location.href='';">
-                      Minhas OS
-                  </div>
-
-                </div>
-              </div>
-            </div>
+            <?php require 'menu.php';?>
 
             <div class='col-sm-9'>
                 <div class='jumbotron'>

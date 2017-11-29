@@ -12,13 +12,13 @@
   </head>
 
 <?php
-  if(isset($_POST['usuario']) && !empty($_POST['usuario'])){
-    $usuario = addslashes($_POST['usuario']);
+  if(isset($_POST['email']) && !empty($_POST['email'])){
+    $email = addslashes($_POST['email']);
     $senha = addslashes(md5($_POST['senha']));
 
-    $u = new Usuario();
+    $usuario = new Usuario();
 
-    if($u->login($usuario, $senha)){
+    if($usuario->login($email, $senha)){
 
       header('Location: ultrabits.php');
       exit;
@@ -41,8 +41,8 @@
       <form method='POST'>
 
         <div class='form-group'>
-          <label for='usuario'>Usuário</label>
-          <input type='text' name='usuario' id='usuario' class='form-control'/>
+          <label for='email'>E-mail</label>
+          <input type='email' name='email' id='email' class='form-control'/>
         <div>
 
         <div class='form-group'>
@@ -56,7 +56,7 @@
 
       </form>
 
-      <strong>Usuário: teste</strong>
+      <strong>E-mail: teste@gmail.com</strong>
       <br/>
       <strong>Senha: teste</strong>
 

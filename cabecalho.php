@@ -18,5 +18,10 @@
                         <img src='assets/imagens/logo.png' width='180'/>
                     </a>
                 </div>
+
+                <ul class='nav navbar-nav navbar-right'>
+                  <li><a href='perfil-usuario.php'>Nome Usuário</a></li>
+                  <li><a href='sair.php'>Sair</a></li>
+                </ul>
             </div>
         </div>

@@ -1,35 +1,24 @@
 <?php
+require './conexao.php';
 
   class Servico{
-      private $db;
 
-      public function __construct(){
+      public function inserirOS($idUsuario,$idTipo,$idCategoria,$descricao,$status,$anexos){
+          global $pdo;
 
-          try{
-              $this->db = new PDO('mysql:dbname=ultrabits;host=localhost;charset=utf8','root','');
-              $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+          $sql = $pdo->prepare("INSERT INTO servicos SET id_usuario = :id_usuario, id_tipo = :id_tipo,
+            id_categoria = :id_categoria, data_operacao = NOW(), descricao = :descricao, status = :status");
 
-          }catch(PDOException $ex){
-              echo 'Erro de conexão: '.$ex->getMessage();
-          }
-      }
-
-      public function inserirOS($email,$empresa,$tipo,$categoria,$descricao,$status,$anexos){
-
-          $sql = $this->db->prepare("INSERT INTO servicos SET email = :email, empresa = :empresa,
-                  data_operacao = NOW(), tipo = :tipo, categoria = :categoria, descricao = :descricao, status = :status");
-
-          $sql->bindValue(':email',$email);
-          $sql->bindValue(':empresa',$empresa);
-          $sql->bindValue(':tipo',$tipo);
-          $sql->bindValue(':categoria',$categoria);
+          $sql->bindValue(':id_usuario',$idUsuario);
+          $sql->bindValue(':id_tipo',$idTipo);
+          $sql->bindValue(':id_categoria',$idCategoria);
           $sql->bindValue(':descricao',$descricao);
           $sql->bindValue(':status',$status);
           $sql->execute();
 
           // Selecionar id do último serviço adicionado
           $sql = "SELECT id FROM servicos ORDER BY id DESC LIMIT 1";
-          $sql = $this->db->query($sql);
+          $sql = $pdo->query($sql);
 
           $array = array();
 
@@ -76,7 +65,7 @@
                       /* Redimensionar as fotos e salvar no repositório local */
 
                       $sql = "INSERT INTO anexos SET id_servico = :id_servico, nome = :nome";
-                      $sql = $this->db->prepare($sql);
+                      $sql = $pdo->prepare($sql);
                       $sql->bindValue(':id_servico', $id);
                       $sql->bindValue(':nome', $nomeAnexo);
                       $sql->execute();
@@ -86,9 +75,10 @@
       }
 
       public function atualizaStatus($status, $id){
+        global $pdo;
 
         $sql = "UPDATE servicos SET status = :status WHERE id = :id";
-        $sql = $this->db->prepare($sql);
+        $sql = $pdo->prepare($sql);
         $sql->bindValue(':status', $status);
         $sql->bindValue(':id', $id);
         $sql->execute();
@@ -96,10 +86,18 @@
       }
 
       public function getListaOS(){
+          global $pdo;
           $array = array();
 
-          $sql = $this->db->prepare("SELECT * FROM servicos ORDER BY id DESC");
-          $sql->execute();
+          $sql = "SELECT usuarios.nome as usuario, usuarios.email, usuarios.empresa,
+          tipo.nome as tipo, categoria.nome as categoria, servicos.id, servicos.data_operacao,
+          servicos.descricao, servicos.status FROM servicos
+          INNER JOIN usuarios ON usuarios.id = servicos.id_usuario
+          INNER JOIN tipo ON tipo.id = servicos.id_tipo
+          INNER JOIN categoria ON categoria.id = servicos.id_categoria
+          ORDER BY servicos.id DESC";
+
+          $sql = $pdo->query($sql);
 
           if($sql->rowCount() > 0){
               $array = $sql->fetchAll();
@@ -108,9 +106,17 @@
       }
 
       public function getOS($id){
+          global $pdo;
           $array = array();
 
-          $sql = $this->db->prepare("SELECT * FROM servicos WHERE id= :id");
+          $sql = $pdo->prepare("SELECT usuarios.nome as usuario, usuarios.email, usuarios.empresa,
+          tipo.nome as tipo, categoria.nome as categoria, servicos.id, servicos.data_operacao,
+          servicos.descricao, servicos.status FROM servicos
+          INNER JOIN usuarios ON usuarios.id = servicos.id_usuario
+          INNER JOIN tipo ON tipo.id = servicos.id_tipo
+          INNER JOIN categoria ON categoria.id = servicos.id_categoria
+          WHERE servicos.id = :id");
+
           $sql->bindValue(':id',$id);
           $sql->execute();
 
@@ -118,7 +124,7 @@
               $array = $sql->fetch();
               $array['anexos'] = array();
 
-              $sql = $this->db->prepare("SELECT * FROM anexos WHERE id_servico = :id_servico");
+              $sql = $pdo->prepare("SELECT * FROM anexos WHERE id_servico = :id_servico");
               $sql->bindValue(':id_servico', $id);
               $sql->execute();
 
@@ -130,8 +136,30 @@
           return $array;
       }
 
+      public function getMinhasOS($idUsuario){
+        global $pdo;
+        $array = array();
+
+        $sql = $pdo->prepare("SELECT servicos.id, servicos.descricao, servicos.status,
+          servicos.data_operacao, tipo.nome as tipo, categoria.nome as categoria from servicos
+          INNER JOIN tipo ON tipo.id = servicos.id_tipo
+          INNER JOIN categoria ON categoria.id = servicos.id_categoria
+          WHERE servicos.id_usuario = :id_usuario");
+
+        $sql->bindValue(':id_usuario', $idUsuario);
+        $sql->execute();
+
+        if($sql->rowCount() > 0){
+          $array = $sql->fetchAll();
+        }
+
+        return $array;
+      }
+
       public function editaOS($empresa,$email,$tipo,$categoria,$descricao,$id){
-          $sql = $this->db->prepare("UPDATE servicos SET empresa= :empresa, data_hora = NOW(), email= :email, tipo= :tipo,
+          global $pdo;
+
+          $sql = $pdo->prepare("UPDATE servicos SET empresa= :empresa, data_hora = NOW(), email= :email, tipo= :tipo,
                                     categoria= :categoria, descricao= :descricao WHERE id= :id");
 
           $sql->bindValue(':empresa',$empresa);
@@ -145,7 +173,9 @@
       }
 
       public function deletaOS($id){
-          $sql = $this->db->prepare("DELETE FROM servicos WHERE id= :id");
+          global $pdo;
+
+          $sql = $pdo->prepare("DELETE FROM servicos WHERE id= :id");
           $sql->bindValue(':id',$id);
           $sql->execute();
       }

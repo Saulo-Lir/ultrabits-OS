@@ -2,45 +2,39 @@
 require 'cabecalho.php';
 require 'classes/servico.class.php';
 
-$servicos = new Servico();
+if(empty($_SESSION['login'])){
+?>
+  <script type='text/javascript'>window.location.href='index.php';</script>
+<?php
+exit;
+}
 
-$query = $servicos->getListaOS();
+$s = new Servico();
+$servicos = $s->getListaOS();
 
 ?>
 
 <div class='container-fluid'>
         <div class='row'>
-            <div class='col-sm-3'>
-              <div class='panel panel-default'>
-                <div class='panel-heading'><h3>Menu</h3></div>
-                <div class='panel-body'>
 
-                  <div class='botao' onclick="window.location.href='solicitar.php';">
-                      Abrir OS
-                  </div>
+            <?php require 'menu.php';?>
 
-                  <div class='botao' onclick="window.location.href='lista-os.php';">
-                      Listar
-                  </div>
-
-                  <div class='botao' onclick="window.location.href='';">
-                      Minhas OS
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
-            <div class='col-sm-9'>
-
+            <div class='col-sm-10'>
+            <div class='panel panel-default'>
+              <div class='panel-heading'><h3>Ordens de Serviço</h3></div>
+              <div class='panel-body'>
+<?php
+  if(!empty($servicos)){
+?>
                 <table class='table table-hover'>
         <thead>
             <tr>
-                <th>DATA</th>
-                <th>EMPRESA</th>
+                <th>SOLICITANTE</th>
                 <th>EMAIL</th>
+                <th>EMPRESA</th>
                 <th>TIPO</th>
                 <th>CATEGORIA</th>
+                <th>DATA</th>
                 <th>STATUS</th>
                 <th>AÇÕES</th>
             </tr>
@@ -48,32 +42,15 @@ $query = $servicos->getListaOS();
         <tbody>
 
     <?php
-
-    $tipo = array(
-      '1' => 'Remoto',
-      '2' => 'Presencial'
-    );
-
-    $categoria = array(
-      '1' => 'Manutenção de Computadores',
-      '2' => 'Configuração',
-      '3' => 'Instalação de Software',
-      '4' => 'Roteadores / Modens / Switches',
-      '5' => 'Formatação',
-      '6' => 'Remoção de Vírus',
-      '7' => 'Upgrade'
-    );
-
-      foreach($query as $servico){
-        $t = $servico['tipo'];
-        $c = $servico['categoria'];
+      foreach($servicos as $servico){
     ?>
             <tr>
-                <td><?=date('d/m/Y \à\s H:i:s', strtotime($servico['data_operacao']))?></td> <!-- Data formatada no padrão brasileiro -->
-                <td><?=$servico['empresa']?></td>
+                <td><?=$servico['usuario']?></td>
                 <td><?=$servico['email']?></td>
-                <td><?= $tipo[$t] ?></td>
-                <td><?= $categoria[$c] ?></td>
+                <td><?=$servico['empresa']?></td>
+                <td><?=$servico['tipo']?></td>
+                <td><?=$servico['categoria']?></td>
+                <td><?=date('d/m/Y \à\s H:i:s', strtotime($servico['data_operacao']))?></td> <!-- Data formatada no padrão brasileiro -->
                 <td class="<?= ($servico['status'] == 1)?'alert alert-danger':'alert alert-success'; ?>">
                   <?php
                     if($servico['status'] == 1){
@@ -84,7 +61,7 @@ $query = $servicos->getListaOS();
                   ?>
                 </td>
                 <td>
-                    <a href='atendimento.php?id=<?=$servico['id']?>' class='btn btn-default'>Atender</a>
+                    <a href='atende-os.php?id=<?=$servico['id']?>' class='btn btn-default'>Atender</a>
                 </td>
             </tr>
     <?php
@@ -93,9 +70,21 @@ $query = $servicos->getListaOS();
         </tbody>
     </table>
 
-            </div>
-        </div>
+<?php
+  }else {
+?>
+    <div class='jumbotron'>
+      <h3>Ainda não existem solicitações cadastradas :( </h3>
     </div>
+
+<?php
+  }
+?>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <?php
     require "rodape.php";
