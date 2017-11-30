@@ -1,7 +1,6 @@
 <?php
 require 'cabecalho.php';
 require 'classes/servico.class.php';
-require 'classes/usuario.class.php';
 require 'classes/atendimento.class.php';
 
 // Verificação de segurança
@@ -16,9 +15,6 @@ require 'classes/atendimento.class.php';
 
 $s = new Servico();
 $a = new Atendimento();
-$u = new Usuario();
-
-$usuario = $u->getUsuario($_SESSION['login']);
 
 // Processamento da atendimento
 

@@ -156,14 +156,41 @@ require './conexao.php';
         return $array;
       }
 
-      public function editaOS($empresa,$email,$tipo,$categoria,$descricao,$id){
+      public function getResumoOS($id){
+        global $pdo;
+        $array = array();
+
+        $sql = $pdo->prepare("SELECT tipo.id as tipo, categoria.id as categoria,
+        servicos.descricao FROM servicos
+        INNER JOIN tipo ON tipo.id = servicos.id_tipo
+        INNER JOIN categoria ON categoria.id = servicos.id_categoria
+        WHERE servicos.id = :id");
+
+        $sql->bindValue(':id',$id);
+        $sql->execute();
+
+        if($sql->rowCount() > 0){
+            $array = $sql->fetch();
+            $array['anexos'] = array();
+
+            $sql = $pdo->prepare("SELECT * FROM anexos WHERE id_servico = :id_servico");
+            $sql->bindValue(':id_servico', $id);
+            $sql->execute();
+
+            if($sql->rowCount() > 0){
+              $array['anexos'] = $sql->fetchAll();
+            }
+        }
+
+        return $array;
+      }
+
+      public function editaOS($tipo, $categoria, $descricao, $id){
           global $pdo;
 
-          $sql = $pdo->prepare("UPDATE servicos SET empresa= :empresa, data_hora = NOW(), email= :email, tipo= :tipo,
-                                    categoria= :categoria, descricao= :descricao WHERE id= :id");
+          $sql = $pdo->prepare("UPDATE servicos SET id_tipo = :tipo, id_categoria = :categoria,
+            data_operacao = NOW(), descricao= :descricao WHERE id= :id");
 
-          $sql->bindValue(':empresa',$empresa);
-          $sql->bindValue(':email',$email);
           $sql->bindValue(':tipo',$tipo);
           $sql->bindValue(':categoria',$categoria);
           $sql->bindValue(':descricao',$descricao);
@@ -178,6 +205,11 @@ require './conexao.php';
           $sql = $pdo->prepare("DELETE FROM servicos WHERE id= :id");
           $sql->bindValue(':id',$id);
           $sql->execute();
+
+          $sql = $pdo->prepare("DELETE FROM anexos WHERE id_servico= :id");
+          $sql->bindValue(':id',$id);
+          $sql->execute();
+
       }
 
   }

@@ -56,8 +56,8 @@
                 </td>
                 <td>
                   <a href='' class='btn btn-default'>Visualizar</a>
-                  <a href='' class='btn btn-warning'>Editar</a>
-                  <a href='' class='btn btn-danger'>Excluir</a>
+                  <a href='edita-os.php?id=<?=$servico['id']?>' class='btn btn-warning'>Editar</a>
+                  <a href='deleta.php?id=<?=$servico['id']?>' class='btn btn-danger'>Excluir</a>
                 </td>
 
               </tr>

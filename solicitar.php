@@ -3,7 +3,6 @@ require 'cabecalho.php';
 require 'classes/servico.class.php';
 require 'classes/categoria.class.php';
 require 'classes/tipo.class.php';
-require 'classes/usuario.class.php';
 
 if(empty($_SESSION['login'])){
 ?>
@@ -11,9 +10,6 @@ if(empty($_SESSION['login'])){
 <?php
 exit;
 }
-
-$u = new Usuario();
-$usuario = $u->getUsuario($_SESSION['login']);
 
 $c = new Categoria();
 $categorias = $c->getCategorias();

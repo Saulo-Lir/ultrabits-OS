@@ -1,5 +1,9 @@
 <?php
   session_start();
+  require 'classes/usuario.class.php';
+
+  $u = new Usuario();
+  $usuario = $u->getUsuario($_SESSION['login']);
 ?>
 
 <html>
@@ -20,7 +24,7 @@
                 </div>
 
                 <ul class='nav navbar-nav navbar-right'>
-                  <li><a href='perfil-usuario.php'>Nome Usuário</a></li>
+                  <li><a href='perfil-usuario.php'><?=$usuario['nome']?></a></li>
                   <li><a href='sair.php'>Sair</a></li>
                 </ul>
             </div>

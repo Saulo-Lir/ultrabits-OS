@@ -1,14 +1,11 @@
 <?php
   require 'cabecalho.php';
-  require 'classes/usuario.class.php';
 
   if(isset($_POST['email']) && !empty($_POST['email'])){
     $nome = addslashes($_POST['nome']);
     $email = addslashes($_POST['email']);
     $empresa = addslashes($_POST['empresa']);
     $senha = $_POST['senha'];
-
-    $usuario = new Usuario();
 
     if($usuario->cadastraUsuario($nome, $email, $empresa, $senha)){
 ?>

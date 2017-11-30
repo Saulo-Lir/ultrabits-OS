@@ -1,9 +1,5 @@
 <?php
   require 'cabecalho.php';
-  require 'classes/usuario.class.php';
-
-  $u = new Usuario();
-  $usuario = $u->getUsuario($_SESSION['login']);
 ?>
 
 <div class='container'>
