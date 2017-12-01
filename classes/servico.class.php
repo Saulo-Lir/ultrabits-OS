@@ -156,6 +156,50 @@ require './conexao.php';
         return $array;
       }
 
+      public function getOrdenaOS($ordem){
+        global $pdo;
+        $array = array();      
+
+        if($ordem == 1){
+          $ordem = 'usuarios.nome';
+        }
+
+        if($ordem == 2){
+          $ordem = 'usuarios.empresa';
+        }
+
+        if($ordem == 3){
+          $ordem = 'tipo.nome';
+        }
+
+        if($ordem == 4){
+          $ordem = 'categoria.nome';
+        }
+
+        if($ordem == 5){
+          $ordem = 'servicos.data_operacao DESC';
+        }
+
+
+        $sql = "SELECT usuarios.nome as usuario, usuarios.email, usuarios.empresa,
+        tipo.nome as tipo, categoria.nome as categoria, servicos.id, servicos.data_operacao,
+        servicos.descricao, servicos.status FROM servicos
+        INNER JOIN usuarios ON usuarios.id = servicos.id_usuario
+        INNER JOIN tipo ON tipo.id = servicos.id_tipo
+        INNER JOIN categoria ON categoria.id = servicos.id_categoria
+        ORDER BY ".$ordem;
+
+        $sql = $pdo->query($sql);
+      //  $sql->bindValue(':ordem', $ordem);
+      //  $sql->execute();
+
+      if($sql->rowCount() > 0){
+          $array = $sql->fetchAll();
+      }
+      return $array;
+
+      }
+
       public function getResumoOS($id){
         global $pdo;
         $array = array();

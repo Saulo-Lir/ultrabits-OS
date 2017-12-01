@@ -10,7 +10,14 @@ exit;
 }
 
 $s = new Servico();
-$servicos = $s->getListaOS();
+
+if(isset($_GET['ordem']) && !empty($_GET['ordem'])){
+  $ordem = addslashes($_GET['ordem']);
+  $servicos = $s->getOrdenaOS($ordem);
+
+}else {
+  $servicos = $s->getListaOS();
+}
 
 ?>
 
@@ -23,6 +30,20 @@ $servicos = $s->getListaOS();
             <div class='panel panel-default'>
               <div class='panel-heading'><h3>Ordens de Serviço</h3></div>
               <div class='panel-body'>
+
+              <form>
+                <div class='form-group'>
+                  <label for='filtro'>Filtro</label>
+                  <select name='ordem' id='filtro' class='form-control' onchange='this.form.submit()'> <!-- onchange = Ao ser mudado o item, envia o formulário -->
+                    <option></option>
+                    <option value='1' >SOLICITANTE</option>
+                    <option value='2' >EMPRESA</option>
+                    <option value='3' >TIPO</option>
+                    <option value='4' >CATEGORIA</option>
+                    <option value='5' >DATA</option>
+                  </select>
+              </div>
+              </form>
 <?php
   if(!empty($servicos)){
 ?>
